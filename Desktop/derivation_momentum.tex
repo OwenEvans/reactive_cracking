@@ -1,0 +1,162 @@
+\documentclass[9pt,fleqn,twoside]{article}
+ 
+%---Packages---
+\usepackage{a4wide}
+\usepackage{graphics}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[lofdepth,lotdepth]{subfig}
+\usepackage{hyperref}
+%---New commands etc---
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\usepackage{setspace}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{alg}{Algorithm}
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\pagestyle{fancy}
+\fancyfoot[C]{\thepage\ of 2}
+\lhead{\it{Owen Evans}}
+%---Settings---
+\setlength{\parskip}{0.3em}
+\renewcommand{\headrulewidth}{0pt}
+%---the document---
+\begin{document}
+%\doublespacing
+\pagenumbering{arabic} \\
+\noindent
+\subsection{Momentum Equation}
+Conservation of mass is stated in the usual way. For low Reynolds
+number conservation of
+momentum becomes a force balance statement for respective phases:
+\begin{equation} 
+\begin{split}
+\nabla \cdot [\phi \mathbf{\sigma_f}] + \phi \rho_f \mathbf{g} +
+\mathbf{F_f} &= \mathbf{0}  \\
+ \nabla \cdot [(1 - \phi) \mathbf{\sigma_s}] + (1 - \phi) \rho_s \mathbf{g} +
+\mathbf{F_s} &= \mathbf{0}
+\end{split}
+\end{equation}
+It is assumed that the interphase force between phases respects
+Newton's third law of motion, i.e. $\mathbf{F_f}$ =
+$-\mathbf{F_s}$. We assume the following form for $\mathbf{F_s}$:
+\begin{equation}
+\mathbf{F_s} = d(\mathbf{v} - \mathbf{V}) - P \nabla \phi +
+\mathbf{F_{\sigma}}, 
+\end{equation}
+where $\mathbf{F_{\sigma}}$ is the force that arises from interfacial
+surface tension. For the time being we make no additional assumptions
+about the form of this term. The second unknown in the above is the
+interfacial pressure, $P$. This is conventionally taken to be equal to
+the mechanical pressure in the fluid, but instead we will take the
+general form $P = P_f + P_b$. The fluid momentum equation becomes
+(after taking $\mathbf{\sigma_f} = -P_f\mathbb{I}$)
+\begin{equation}
+\begin{split}
+&-\nabla \cdot [\phi P_f\mathbb{I}] + \phi \rho_f \mathbf{g} - d(\mathbf{v} - \mathbf{V}) + P \nabla \phi -
+\mathbf{F_{\sigma}} \\
+=&-\nabla \cdot [\phi P_f\mathbb{I}] + \phi \rho_f \mathbf{g} -
+d(\mathbf{v} - \mathbf{V}) + (P_f + P_b) \nabla \phi -
+\mathbf{F_{\sigma}} = 0,
+\end{split}
+\end{equation}
+which, after some rearrangement becomes
+\begin{equation}
+\phi(\mathbf{v} - \mathbf{V}) = -\frac{\phi^2}{d} \left [ \nabla P_f -
+  \rho_f \mathbf{g} - \frac{P_b}{\phi} \nabla \phi +
+  \frac{\mathbf{F_{\sigma}}}{\phi} \right ],
+\end{equation}
+which is similar the standard Darcay equation but with some extra terms.
+Similarly, the solid momentum equation becomes (after taking
+$\mathbf{\sigma_s} = \mathbf{\tau} - P_s \mathbb{I}$)
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] - \nabla \cdot [(1-\phi)
+P_s\mathbb{I}] + (1 - \phi) \rho_s \mathbf{g} + d(\mathbf{v} -
+\mathbf{V}) - (P_f + P_b) \nabla \phi +
+\mathbf{F_{\sigma}} = 0.
+\end{equation}
+To obtain the desired solid momentum equationwe add the equations in
+(1), by which the interphase force terms drop out entirely, and we are
+left with
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] + \nabla [ \phi(P_s - P_f)]
+- \nabla P_s + \bar{\rho}\mathbf{g} = 0,
+\end{equation}
+where $\bar{\rho}$ is the phase-avergaed density. We now introduce
+another closure:
+\begin{equation}
+P_f - P_s = \zeta \nabla \cdot \mathbf{V} + P_a,
+\end{equation}
+so that
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] - \nabla [ \phi(\zeta \nabla \cdot \mathbf{V} + P_a)]
+- \nabla P_s + \bar{\rho}\mathbf{g} = 0,
+\end{equation}
+which is no different in content to the standard momentum equation
+(all of our other modifications have dropped out), except that there
+is an extra $-\nabla (\phi P_a)$ terms floating about.
+\subsection{Surface Energy}
+We assume that $\mathbf{F}_{\sigma} =
+\nabla E_c$, where $E_c$ is the interfacial crack energy per unit
+volume. Following Riley and Kohstedt (1991) we write
+\begin{equation}
+E_c = \frac{1}{V} (A_{ss} \gamma_{ss} + A_{sl} \gamma_{sl})
+\end{equation}
+where $\gamma_{ss}$ and $\gamma_{sl}$ are the respective solid--solid
+and solid--liquid interfacial free energies. $V$ is the volume of a
+representative cube of length $d$, so that $V=d^3$. $A_{ss}$ is the
+average solid--solid surface area within the volume -- the average of
+surface area of dry cracks times the total number of dry cracks. $A_{sl}$ is the average surface area of
+fluid filled cracks within the volume times the number of fluid filled
+cracks. We assume that wet and dry
+cracks have the same dimensions, and that the average surface area of
+a crack  is $c^2$. We let $N_t = N_d + N_w$ be the average number of cracks within
+a volume, such that $N_d$ and $N_w$ are the respective average numbers
+of dry and wet cracks. Then
+\begin{align}
+A_{ss} &= (N_t - N_w) \times c^2 \\
+&= N_t c^2 \left( 1 - \frac{N_w}{N_t} \right) \\
+&= N_t c^2 ( 1 - f_w),
+\end{align}
+where $f_w$ is the ratio of wet cracks to the total number of
+cracks. Similarly
+\begin{equation}
+A_{sl} = N_t c^2 f_w . 
+\end{equation}
+So that
+\begin{equation}
+E_c = \frac{c^2 N_t}{d^3} \left ( (1 - f_w) \gamma_{ss} + f_w
+  \gamma_{sl} \right) .
+\end{equation}
+We let $\alpha = \frac{c^2 N_t}{d^3}$, the specific surface area of
+cracks within the volume.\\
+\\
+Now we want to relate the defined quantities to the porosity. if
+$\delta$ is a characteristic crack length, then it makes sense to say
+that
+\begin{equation}
+\phi = \frac{N_w c^2 \delta}{d^3} = f_w \alpha \delta .
+\end{equation}
+Assumption: all fluid exists in cracks, and nowhere else -- is this
+right? Writing $E_c$ with porosity terms gives
+\begin{equation}
+E_c = \frac{1}{\delta} \left( (\alpha \delta - \phi) \gamma_{ss} -
+  \phi \gamma_{sl} \right).
+\end{equation}
+Then 
+\begin{equation}
+\mathbf{F}_{\sigma} = \nabla E_c = - \frac{\gamma_{ss} +
+  \gamma_{sl}}{\delta} \nabla \phi
+\end{equation}
+\end{document}
