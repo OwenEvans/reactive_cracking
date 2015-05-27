@@ -5,7 +5,7 @@ from math import atan, pi
 N        = 1000 # number grid cells
 phi_max  = 0.6
 step_size = 0.2
-theta    = Constant(0.5)
+theta    = Constant(1.0)
 A        = Constant(1000.)
 B        = Constant(50.)
 n        = Constant(3.)
