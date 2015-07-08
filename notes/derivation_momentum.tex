@@ -1,0 +1,367 @@
+\documentclass[9pt,fleqn,twoside]{article}
+ 
+%---Packages---
+\usepackage{a4wide}
+\usepackage{graphics}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[lofdepth,lotdepth]{subfig}
+\usepackage{hyperref}
+%---New commands etc---
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\usepackage{setspace}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}[section]
+\newtheorem{alg}{Algorithm}
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\pagestyle{fancy}
+\fancyfoot[C]{\thepage\ of 6}
+\lhead{\it{Owen Evans}}
+%---Settings---
+\setlength{\parskip}{0.3em}
+\renewcommand{\headrulewidth}{0pt}
+%---the document---
+\begin{document}
+%\doublespacing
+\pagenumbering{arabic} \\
+\noindent
+\subsection{Momentum Equation}
+Conservation of mass is stated in the usual way. For low Reynolds
+number conservation of
+momentum becomes a force balance statement for respective phases:
+\begin{equation} 
+\begin{split}
+\nabla \cdot [\phi \mathbf{\sigma_f}] + \phi \rho_f \mathbf{g} +
+\mathbf{F_f} &= \mathbf{0}  \\
+ \nabla \cdot [(1 - \phi) \mathbf{\sigma_s}] + (1 - \phi) \rho_s \mathbf{g} +
+\mathbf{F_s} &= \mathbf{0}
+\end{split}
+\end{equation}
+It is assumed that the interphase force between phases respects
+Newton's third law of motion, i.e. $\mathbf{F_f}$ =
+$-\mathbf{F_s}$. We assume the following form for $\mathbf{F_s}$:
+\begin{equation}
+\mathbf{F_s} = d(\mathbf{v} - \mathbf{V}) - P \nabla \phi +
+\mathbf{F_{\sigma}}, 
+\end{equation}
+where $\mathbf{F_{\sigma}}$ is the force that arises from interfacial
+surface tension. For the time being we make no additional assumptions
+about the form of this term. The second unknown in the above is the
+interfacial pressure, $P$. This is conventionally taken to be equal to
+the mechanical pressure in the fluid, but instead we will take the
+general form $P = P_f + P_b$. The fluid momentum equation becomes
+(after taking $\mathbf{\sigma_f} = -P_f\mathbb{I}$)
+\begin{equation}
+\begin{split}
+&-\nabla \cdot [\phi P_f\mathbb{I}] + \phi \rho_f \mathbf{g} - d(\mathbf{v} - \mathbf{V}) + P \nabla \phi -
+\mathbf{F_{\sigma}} \\
+=&-\nabla \cdot [\phi P_f\mathbb{I}] + \phi \rho_f \mathbf{g} -
+d(\mathbf{v} - \mathbf{V}) + (P_f + P_b) \nabla \phi -
+\mathbf{F_{\sigma}} = 0,
+\end{split}
+\end{equation}
+which, after some rearrangement becomes
+\begin{equation}
+\phi(\mathbf{v} - \mathbf{V}) = -\frac{\phi^2}{d} \left [ \nabla P_f -
+  \rho_f \mathbf{g} - \frac{P_b}{\phi} \nabla \phi +
+  \frac{\mathbf{F_{\sigma}}}{\phi} \right ],
+\end{equation}
+which is similar the standard Darcay equation but with some extra terms.
+Similarly, the solid momentum equation becomes (after taking
+$\mathbf{\sigma_s} = \mathbf{\tau} - P_s \mathbb{I}$)
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] - \nabla \cdot [(1-\phi)
+P_s\mathbb{I}] + (1 - \phi) \rho_s \mathbf{g} + d(\mathbf{v} -
+\mathbf{V}) - (P_f + P_b) \nabla \phi +
+\mathbf{F_{\sigma}} = 0.
+\end{equation}
+To obtain the desired solid momentum equationwe add the equations in
+(1), by which the interphase force terms drop out entirely, and we are
+left with
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] + \nabla [ \phi(P_s - P_f)]
+- \nabla P_s + \bar{\rho}\mathbf{g} = 0,
+\end{equation}
+where $\bar{\rho}$ is the phase-avergaed density. We now introduce
+another closure:
+\begin{equation}
+P_f - P_s = \zeta \nabla \cdot \mathbf{V} + P_a,
+\end{equation}
+so that
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] - \nabla [ \phi(\zeta \nabla \cdot \mathbf{V} + P_a)]
+- \nabla P_s + \bar{\rho}\mathbf{g} = 0,
+\end{equation}
+which is no different in content to the standard momentum equation
+(all of our other modifications have dropped out), except that there
+is an extra $-\nabla (\phi P_a)$ terms floating about.
+\subsection{Surface Energy}
+We assume that $\mathbf{F}_{\sigma} =
+\nabla E_c$ (NOTE: this might be $\mathbf{F}_{\sigma} = -
+\nabla E_c$), where $E_c$ is the interfacial crack energy per unit
+volume. Following Riley and Kohstedt (1991) we write
+\begin{equation}
+E_c = \frac{1}{V} (A_{ss} \gamma_{ss} + A_{sl} \gamma_{sl})
+\end{equation}
+where $\gamma_{ss}$ and $\gamma_{sl}$ are the respective solid--solid
+and solid--liquid interfacial free energies. $V$ is the volume of a
+representative cube of length $d$, so that $V=d^3$. $A_{ss}$ is the
+average solid--solid surface area within the volume -- the average of
+surface area of dry cracks times the total number of dry cracks. $A_{sl}$ is the average surface area of
+fluid filled cracks within the volume times the number of fluid filled
+cracks. We assume that wet and dry
+cracks have the same dimensions, and that the average surface area of
+a crack  is $c^2$. We let $N_t = N_d + N_w$ be the average number of cracks within
+a volume, such that $N_d$ and $N_w$ are the respective average numbers
+of dry and wet cracks. Then
+\begin{align}
+A_{ss} &= (N_t - N_w) \times c^2 \\
+&= N_t c^2 \left( 1 - \frac{N_w}{N_t} \right) \\
+&= N_t c^2 ( 1 - f_w),
+\end{align}
+where $f_w$ is the ratio of wet cracks to the total number of
+cracks. Similarly
+\begin{equation}
+A_{sl} = N_t c^2 f_w . 
+\end{equation}
+So that
+\begin{equation}
+E_c = \frac{c^2 N_t}{d^3} \left ( (1 - f_w) \gamma_{ss} + f_w
+  \gamma_{sl} \right) .
+\end{equation}
+We let $\alpha = \frac{c^2 N_t}{d^3}$, the specific surface area of
+cracks within the volume.\\
+\\
+Now we want to relate the defined quantities to the porosity. if
+$\delta$ is a characteristic crack length, then it makes sense to say
+that
+\begin{equation}
+\phi = \frac{N_w c^2 \delta}{d^3} = f_w \alpha \delta .
+\end{equation}
+Assumption: all fluid exists in cracks, and nowhere else -- is this
+right? Writing $E_c$ with porosity terms gives
+\begin{equation}
+E_c = \frac{1}{\delta} \left( (\alpha \delta - \phi) \gamma_{ss} +
+  \phi \gamma_{sl} \right).
+\end{equation}
+Then 
+\begin{equation}
+\mathbf{F}_{\sigma} = \nabla E_c =  \frac{\gamma_{sl} -
+  \gamma_{ss}}{\delta} \nabla \phi
+\end{equation}
+\subsection{Momentum ala Mckenzie: 1. Viscous case}
+We rewrite (8) to isolate $P_s$ (which we will eliminate shortly):
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] - \nabla [ (1 - \phi) P_s \mathbb{I}] - \nabla [\phi P_f \mathbb{I}] +  \bar{\rho}\mathbf{g} = 0
+\end{equation}
+Using (7) this can becomes
+\begin{equation}
+\nabla \cdot [(1 - \phi) \mathbf{\tau_s}] - \nabla [ (1 - \phi)(P_f - P_a - \zeta \nabla \cdot \mathbf{V}) \mathbb{I}] - \nabla [\phi P_f \mathbb{I}] +  \bar{\rho}\mathbf{g} = 0
+\end{equation}
+The deviatoric stress tensor for the matrix phase is assumed to be that of an isotropic viscous fluid:
+\begin{equation}
+\mathbf{\tau_s} = \mu_s \left( \nabla \mathbf{V} + \nabla \mathbf{V}^{T} - \frac{2}{3} (\nabla \cdot \mathbf{V}) \mathbb{I} \right)
+\end{equation}
+Substituting this relation into the solid momentum equation above gives
+\begin{equation}
+\nabla \cdot [ (1 - \phi) \mu_s (\nabla \mathbf{V} + \nabla\mathbf{V}^{T} )] - \nabla \cdot [( 1- \phi)(P_f - P_a) \mathbb{I} ] + \nabla \cdot \left( (1 - \phi)(\zeta - \frac{2}{3} \mu_s ) \nabla \cdot \mathbf{V} \mathbb{I} \right) - \nabla ( \phi P_f \mathbb{I} ) + \bar{\rho} \mathbf{g} = 0
+\end{equation}
+This can be simplified by defining $\eta = (1 - \phi) \mu_s$ and $\xi = (1 - \phi)(\zeta - \frac{2}{3} \mu_s)$:
+\begin{equation}
+  \nabla \cdot [ \eta (\nabla \mathbf{V} + \nabla\mathbf{V}^{T} )]  + \nabla \left( \xi  \nabla \cdot \mathbf{V}  \right)  - \nabla P_f + \nabla[(1 - \phi)P_a] + \bar{\rho} \mathbf{g} = 0
+\end{equation}
+Going back to the liquid momentum equation (i.e. Darcy), we let $P_b=0$ and define $d = \frac{\phi^2 \mu_f}{K}$, where $K$ is the permeability. Also take $\mu = \mu_f$. Then the respective solid and liquid momentum equation are
+\begin{equation}
+\boxed{\phi(\mathbf{v} - \mathbf{V}) = -\frac{K}{\mu} \left [ \nabla P_f - \rho_f \mathbf{g} + \frac{\mathbf{F_{\sigma}}}{\phi} \right ]} 
+\end{equation}
+\begin{equation}
+\boxed{\nabla \cdot [ \eta (\nabla \mathbf{V} + \nabla\mathbf{V}^{T} )]  + \nabla \left( \xi  \nabla \cdot \mathbf{V}  \right)  - \nabla P_f + \nabla[(1 - \phi)P_a] + \bar{\rho} \mathbf{g} = 0}
+\end{equation}
+ \subsection{2. Elastic solid rheology}
+We alter the solid rheology  by expressing the stress-strain relationship as
+\begin{equation}
+\mathbf{\tau_s} = G \left( \nabla \mathbf{U} + \nabla \mathbf{U}^{T} - \frac{2}{3} (\nabla \cdot \mathbf{U}) \mathbb{I} \right),
+\end{equation}
+where $G$ is the elastic shear modulus. Equation (7) can be modified such that
+\begin{equation}
+P_f - P_s = K \nabla \cdot \mathbf{U} + P_a,
+\end{equation} 
+where $K$ is the elastic bulk modulus. This only changes the solid momentum equation symbolically, where $\eta$ and $\zeta$ are replaced by the elastic moduli:
+\begin{equation}
+\nabla \cdot [ G (\nabla \mathbf{U} + \nabla\mathbf{U}^{T} )]  + \nabla \left( \lambda  \nabla \cdot \mathbf{U}  \right)  - \nabla P_f + \nabla[(1 - \phi)P_a] + \bar{\rho} \mathbf{g} = 0
+\end{equation}
+where $\lambda = (1 - \phi)(K - \frac{2}{3} \mu)$ is the modified second lame parameter.
+\subsection{Pressure-split}
+Split the fluid pressure: $P_f = \mathcal{P} + P^{*} + P_l$, where $\mathcal{P} = \lambda \nabla \cdot \mathbf{U}$ is the compaction pressure, $P_l= -\rho_m g z$ (is this right?) is the lithospheric pressure and $P^{*}$ is the remaining contribution. Then taking the material derivative of $\mathcal{P}$:
+\begin{equation}
+\boxed{\frac{D}{Dt} \left (\frac{\mathcal{P}}{\lambda} \right) = \nabla \cdot \mathbf{V}} .
+\end{equation}
+Aside: going back to conservation of momentum. Assume no melting (or reaction) and apply the Boussinesq approximation to both phases. Adding the solid and liquid equations then says that
+\begin{equation}
+\nabla \cdot [ \phi \mathbf{v} + (1 - \phi) \mathbf{V} ] = 0 \implies \nabla \cdot \mathbf{V} = - \nabla \cdot [\phi(\mathbf{v} - \mathbf{V})] 
+\end{equation}
+Applying Darcy (23) eliminates $\mathbf{v}$:
+\begin{equation}
+\nabla \cdot \mathbf{V} = \frac{D}{Dt} \left (\frac{\mathcal{P}}{\lambda}\right) = \nabla \cdot \frac{K}{\mu} \left [ \nabla P_f - \rho_f \mathbf{g} + \frac{\mathbf{F_{\sigma}}}{\phi} \right ]
+\end{equation}
+which, after substituting the pressure-split becomes
+\begin{equation}
+\boxed{- \nabla \cdot \left( \frac{K}{\mu} \nabla \mathcal{P} \right ) + \frac{D}{Dt} \left (\frac{\mathcal{P}}{\lambda}\right) = \nabla \cdot\frac{K}{\mu} \left [ \nabla P_l + \nabla P^{*} - \Delta \rho \mathbf{g} + \frac{\mathbf{F_{\sigma}}}{\phi} \right ]}
+\end{equation}
+where $\Delta \rho = \rho_m - \rho_f$.
+The solid mass conservation equation says that
+\begin{align}
+\frac{\partial \phi}{\partial t} + (\mathbf{V} \cdot \nabla \phi) &= (1-\phi) \nabla \cdot \mathbf{V} \\
+\implies \frac{D \phi}{Dt} &= ( 1 - \phi) \cdot \mathbf{V}
+\end{align}
+which can be written in terms of the compaction pressure
+\begin{equation}
+\boxed{\frac{D \phi}{D t} = (1 - \phi) \frac{D}{Dt} \left (\frac{\mathcal{P}}{\lambda}\right)}
+\end{equation}
+The remaining pressure contribution is given by
+\begin{equation}
+\boxed{\nabla P^{*} = \nabla \cdot [ G (\nabla \mathbf{U} + \nabla\mathbf{U}^{T} )] + \nabla[(1 - \phi) P_a] + \phi \Delta \rho \mathbf{g}}
+\end{equation}
+\subsection{Scaling: P_a = E_c}
+Equations (31) and (32) form a coupled system. We ignore gravitational
+effects and by restricting to a 1D case, can also neglect terms
+involving $\mathbf{U}$. We consider two cases: 1. $P_a = E_c$ and
+2. $P_a = 0$. For case 1, equation (31) becomes (replacing $\lambda$
+with $K_e$)
+\begin{equation}
+\frac{D}{Dt} \left (\frac{\mathcal{P}}{K_e}\right) = \nabla
+  \cdot\frac{K}{\mu} \left [ \nabla \mathcal{P} + \nabla [ ( 1- \phi)
+    E_c ] + \frac{\nabla E_c}{\phi} \right ]},
+\end{equation}
+and the porosity evolution equation is
+\begin{equation}
+\frac{D \phi}{D t} = (1 - \phi) \frac{D}{Dt} \left (\frac{\mathcal{P}}{K_e}\right)
+\end{equation}
+We make the following scalings:
+\begin{equation}
+K = K_0 \left( \frac{\phi^n}{\phi_0^n} \right), \: \: \mathcal{P} = K_e
+\mathcal{P}^{'}, \: \: t = \frac{t^{'}}{T}, \: \: x = Lx^{'},
+\end{equation}
+where $K_0$ is the charactestic permeability and $\phi_0$ is the
+charateristic porosity. Following this out we have (dropping primes)
+\begin{equation}
+\frac{D}{Dt} \left (\mathcal{P}\right) &= \nabla
+  \cdot\frac{K_0 \phi^n}{\mu \phi_0^n T L^2} \left [ \nabla (
+    K_e\mathcal{P}) + (1 - \phi) \nabla E_c - E_c \nabla \phi +
+    \frac{\nabla E_c}{\phi} \right ] .\\
+\end{equation}
+The RHS can be written as
+\begin{equation}
+\nabla
+  \cdot\frac{K_0 K_e \phi^n}{\mu \phi_0^n T L^2}  \nabla 
+    \mathcal{P} + \nabla \cdot\frac{K_0 \phi^n}{\mu \phi_0^n T L^2} \left ( \frac{\gamma_{sl}
+      - \gamma_{ss}}{\delta} \right)\left [ (1 - \phi) \nabla \phi - \phi \nabla \phi -
+    \alpha \gamma_{ss} \left( \frac{\delta}{\gamma_{sl} - \gamma_{ss}}
+    \right) \nabla \phi
+    + \frac{\nabla \phi}{\phi} \right ]
+\end{equation}
+where (17) has been used. We introduce dimensionless constants:
+\begin{equation}
+A = \frac{K_0 K_e}{\mu \phi_0^n T L^2}, \: \: B =  \frac{K_0}{\mu
+  \phi_0^n T L^2} \left ( \frac{\gamma_{sl}  - \gamma_{ss}}{\delta} \right), \: \: C =  \alpha \gamma_{ss} \left( \frac{\delta}{\gamma_{sl} - \gamma_{ss}}
+    \right), 
+\end{equation}
+which gives (after a bit of rearrangement)
+\begin{equation}
+\frac{D}{Dt} \left (\mathcal{P}\right) &= A \nabla
+  \cdot [\phi^n \nabla \mathcal{P}] + B \nabla \cdot \phi^n [ ( 1- C)
+  \nabla \phi - 2 \phi  \nabla \phi + \frac{\nabla \phi}{\phi} ],  
+\end{equation}
+which can be written as
+\begin{equation}
+\boxed{\frac{D \mathcal{P} }{Dt} &= A \nabla
+  \cdot [\phi^n \nabla \mathcal{P}] + B \nabla \cdot \phi^n \left[ ( 1- C)
+  \nabla \phi - \nabla (\phi^2) + \frac{\nabla \phi}{\phi} \right]},
+\end{equation}
+where $\nabla = \frac{d}{dx}$. To close the system we also have
+\begin{equation}
+\boxed{\frac{D \phi}{D t} = (1 - \phi) \frac{D \mathcal{P}}{Dt}}
+\end{equation}
+\subsection{P_a = 0}
+In the case where$P_a = 0$, the above system reduces to
+\begin{equation}
+\boxed{\frac{D \mathcal{P} }{Dt} &= A \nabla
+  \cdot [\phi^n \nabla \mathcal{P}] + B \nabla \cdot \phi^n \left[\frac{\nabla \phi}{\phi} \right]},
+\end{equation}
+and equation (44) is unchanged.
+\subsection{Stability Analysis}
+Take $P_a=0$ and perturb the coupled system (??) about a base
+state. Any pair of constants $\phi = \phi_0$ and $\mathcal{P} =
+\mathcal{P}_0$ is a solution (i.e. the system involves only gradients
+and time derivatives, so clearly and constant is a
+solution). This system is then perturbed about the base state via a
+small parameter $\epsilon$:
+ \begin{align}
+\phi &= \phi_0 + \epsilon \phi_1 \\
+\mathcal{P} &= \mathcal{P}_0 + \epsilon \mathcal{P}_1
+\end{align}
+At $\mathcal{O}(\epsilon)$ equation (44) becomes
+\begin{equation}
+\frac{D \phi_1}{D t} = (1 - \phi_0) \frac{D \mathcal{P}_1}{Dt},
+\end{equation}
+and equation (45) similarly becomes (after dividing by A)
+\begin{equation}
+\frac{1}{A} \frac{D \mathcal{P}_1 }{Dt} &=  \nabla
+  \cdot [\phi_0^n \nabla \mathcal{P}_1] + \frac{B}{A} \nabla \cdot
+  \left[ \phi_0^{n-1} \nabla \phi_1 \right]
+\end{equation}
+Treating the material derivatives in (48) as pure time derivatives, we can write
+\begin{equation}
+\phi_1 = (1 - \phi_0) \mathcal{P}_1 + c_1,
+\end{equation}
+for some constant $c_1$. Substituting this into (49) gives
+\begin{equation}
+\frac{1}{A(1 - \phi_0)} \frac{D \phi_1 }{Dt} &=  \nabla
+  \cdot [\frac{\phi_0^n}{1 - \phi_0} \nabla \phi_1] + \frac{B}{A} \nabla \cdot
+  \left[ \phi_0^{n-1} \nabla \phi_1 \right]
+\end{equation}
+We search for modes of the form $\phi_1 = \tilde{\phi}e^{\omega t + i
+  k x}$. Substituting this into (51) gives
+\begin{equation}
+\frac{\omega}{A(1 - \phi_0)} = -k^2 \left( \frac{\phi_0^n}{1 - \phi_0}
+  + \frac{B}{A} \phi_0^{n-1} \right)
+\end{equation}
+so that
+\begin{equation}
+\omega = -k^2( A \phi_0^n + B(1 - \phi_0)\phi_0^{n-1}).
+\end{equation}
+The sign of $\omega$ depends on $A,B$ and $\phi_0$:
+\begin{itemize}
+\item{({\it unstable}) $\omega>0$ if $A \phi_0^n + B(1 - \phi_0)\phi_0^{n-1} <0$}
+\item{({\it stable}) $\omega<0$ if $A \phi_0^n + B(1 - \phi_0)\phi_0^{n-1} >0$}
+\item{({\it neutrally stable}) $\omega=0$ if $A \phi_0^n + B(1
+    -\phi_0)\phi_0^{n-1} = 0$.}
+\end{itemize}
+\begin{figure}[!htbp]
+\centering
+\scalebox{0.5} 
+{\includegraphics{stability.pdf}} 
+\caption{\small {\it Stability map for $\frac{B}{A}$ vs. $\phi_0$.}} 
+\end{figure}
+More simply, the system is stable if $\frac{\phi_0}{1-\phi_0} +
+\frac{B}{A} > 0$, and is unstable if $\frac{\phi_0}{1-\phi_0} +
+\frac{B}{A} > 0$. The neutral curve is then defined by $\frac{B}{A} =
+\frac{\phi_0}{\phi_0 - 1}$. Plotting $\phi_0$ on the x-axis and
+$\frac{B}{A}$ on the y-axis we obtain stability map given in Figure
+1. 
+
+
+
+
+\end{document}
