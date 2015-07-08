@@ -360,6 +360,22 @@ More simply, the system is stable if $\frac{\phi_0}{1-\phi_0} +
 \frac{\phi_0}{\phi_0 - 1}$. Plotting $\phi_0$ on the x-axis and
 $\frac{B}{A}$ on the y-axis we obtain stability map given in Figure
 1. 
+\section{Revisions, July 2015}
+Try taking $P_f = \mathcal{P} + P^{*} + P_{l} + P_{c}$, where $P_{c}$
+is is the capillary pressure. For the time being I am removing the
+$\mathbf{F}_{\sigma}$ term, bearing in mind that by introducing the
+capillary pressure term into the split above that this also enters
+into the definition of the interphase force. This is because
+$P=P_f$. Taking $P_c = (1 - \phi)P_a$, the Darcay equation becomes
+\begin{equation}
+\boxed{\frac{D \mathcal{P} }{Dt} &= A \nabla
+  \cdot [\phi^n \nabla \mathcal{P}] + B \nabla \cdot \phi^n \left[ ( 1- C)
+  \nabla \phi - \nabla (\phi^2) \right]},
+\end{equation}
+Here we have assumed that $P_a = E_c$. This needs to be looked more
+closely but I'm using this now just to get an idea of how this set-up
+changes things.
+
 
 
 
