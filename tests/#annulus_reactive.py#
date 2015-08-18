@@ -7,21 +7,24 @@ def A_B_sweep(A, B):
     N        = 1000 # number grid cells
     theta    = Constant(1.0)
     n        = Constant(3.)
-    m        = Constant(1.)
-    Kb       = Constant(1.0)
+    m        = Constant(2.)
+    Kb       = Constant(10.0)
     P0       = Constant(0.5)
     C_1       = Constant(0.5)
     C_2       = Constant(0.5)
     C_3       = Constant(-1.0)
-
+    Pout      = Constant(0.5)
+    
     # define mesh
     mesh = Mesh("annulus.xml")
 
     # define function space
-    Q = FunctionSpace(mesh, "CG", 1) # pressure space
+    Q = FunctionSpace(mesh, "CG", 1) # compaction pressure space
     W = FunctionSpace(mesh, "CG", 1) # porosity space
     C = FunctionSpace(mesh, "CG", 1) # concentration space
-    ME = MixedFunctionSpace([W,Q,C])
+    U = VectorFunctionSpace(mesh, "CG", 2) # displacement space
+    PS = FunctionSpace(mesh, "CG", 1) # dynamic pressure space
+    ME = MixedFunctionSpace([W,Q,C,U,PS])
 
     tol= 0.005
     # define boundaries
@@ -61,7 +64,7 @@ def A_B_sweep(A, B):
     bcs = [bc0, bc1, bc2, bc3]
 
     # initial conditions for p & c
-    p_0 = Constant(0.1)
+    p_0 = Constant(0.)
     c_0 = Constant(0.)
 
     p_initial = p_0
@@ -70,28 +73,37 @@ def A_B_sweep(A, B):
     p_prev = project(p_initial, Q)
     c_prev = project(c_initial, C)
 
-    # initial condition for phi
-#    phi_min = 0.001 
-#    phi_bnd = 1.  
-#    xlambda = 0.01
-#    phi_initial = Expression("phi_min + (phi_bnd - phi_min)*exp(-(pow(x[0]*x[0]+x[1]*x[1], 0.5) - 0.25)/xlambda)",
-#                             phi_min=phi_min, phi_bnd=phi_bnd, xlambda=xlambda)
+    # initial condition for u and ps
+    u_0 = Constant(0.)
+    u_initial = u_0
+    u_prev = project(u_initial, U)
 
-#    phi_prev = project(phi_initial, W)
+    ps_0 = Constant(0.)
+    ps_initial = ps_0
+    ps_prev = project(ps_initial, PS)
+
+    # initial condition for phi
+    phi_min = 0.001 
+    phi_bnd = 1.  
+    xlambda = 0.01
+    phi_initial = Expression("phi_min + (phi_bnd - phi_min)*exp(-(pow(x[0]*x[0]+x[1]*x[1], 0.5) - 0.25)/xlambda)",
+                             phi_min=phi_min, phi_bnd=phi_bnd, xlambda=xlambda)
+
+    phi_prev = project(phi_initial, W)
 
     # try background noise porosity
     class noise(Expression):
         def eval(self,values,x):
             values[0] = 0.001 + gauss(-0.0005, 0.0005)
 
-    randf = noise()
-    phi_prev = project(randf, W)
+#    randf = noise()
+#    phi_prev = project(randf, W)
 
     # define trial and test functions
     dv = TrialFunction(ME)
-    (phi_t, p_t, c_t) = TestFunctions(ME)
+    (phi_t, p_t, c_t, u_t, ps_t) = TestFunctions(ME)
     vfunc = Function(ME)
-    phi, p, c = split(vfunc)
+    phi, p, c, u, ps = split(vfunc)
 
     # time-step, initial and final times
     dt = 0.001       # time-step
@@ -126,7 +138,7 @@ def A_B_sweep(A, B):
 
         r_phi = phi_t*(phi - phi_prev)*dx - phi_t*(p - p_prev)*dx - dt*phi_t*C_1*Gamma_theta*dx
         
-        r_p = p_t*((p - p_prev)/A)*dx + dt*(inner(grad(p_t),pdiff_theta)*dx - (1./A)*p_t*C_2*Gamma_theta*dx) - (1./A)*s_p*ds(0) + dt*(B/A)*inner(grad(p_t),fdiff_theta)*dx 
+        r_p = p_t*((p - p_prev)/A)*dx + dt*(inner(grad(p_t),pdiff_theta)*dx - (1./A)*p_t*C_2*Gamma_theta*dx) - s_p*ds(0) + dt*(B/A)*inner(grad(p_t),fdiff_theta)*dx 
         
         r_c = c_t*(c - c_prev)*dx - dt*c_t*C_3*Gamma_theta*dx
 
@@ -153,6 +165,6 @@ def A_B_sweep(A, B):
         j += 1
 
 if __name__ == "__main__":
-    A, B = Constant(10.), Constant(10.)
+    A, B = Constant(.5), Constant(0.5)
     A_B_sweep(A, B)
     

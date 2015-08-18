@@ -13,15 +13,18 @@ def A_B_sweep(A, B):
     C_1       = Constant(0.5)
     C_2       = Constant(0.5)
     C_3       = Constant(-1.0)
-
+    Pout      = Constant(0.5)
+    
     # define mesh
     mesh = Mesh("annulus.xml")
 
     # define function space
-    Q = FunctionSpace(mesh, "CG", 1) # pressure space
+    Q = FunctionSpace(mesh, "CG", 1) # compaction pressure space
     W = FunctionSpace(mesh, "CG", 1) # porosity space
     C = FunctionSpace(mesh, "CG", 1) # concentration space
-    ME = MixedFunctionSpace([W,Q,C])
+    U = VectorFunctionSpace(mesh, "CG", 2) # displacement space
+    PS = FunctionSpace(mesh, "CG", 1) # dynamic pressure space
+    ME = MixedFunctionSpace([W,Q,C,U,PS])
 
     tol= 0.005
     # define boundaries
@@ -70,6 +73,15 @@ def A_B_sweep(A, B):
     p_prev = project(p_initial, Q)
     c_prev = project(c_initial, C)
 
+    # initial condition for u and ps
+    u_0 = Constant(0.)
+    u_initial = u_0
+    u_prev = project(u_initial, U)
+
+    ps_0 = Constant(0.)
+    ps_initial = ps_0
+    ps_prev = project(ps_initial, PS)
+
     # initial condition for phi
     phi_min = 0.001 
     phi_bnd = 1.  
@@ -89,9 +101,9 @@ def A_B_sweep(A, B):
 
     # define trial and test functions
     dv = TrialFunction(ME)
-    (phi_t, p_t, c_t) = TestFunctions(ME)
+    (phi_t, p_t, c_t, u_t) = TestFunctions(ME)
     vfunc = Function(ME)
-    phi, p, c = split(vfunc)
+    phi, p, c, u = split(vfunc)
 
     # time-step, initial and final times
     dt = 0.001       # time-step
