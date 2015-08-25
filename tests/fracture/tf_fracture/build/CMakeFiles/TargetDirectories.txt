@@ -1,0 +1,4 @@
+/home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/build/buckettools_ufc/CMakeFiles/buckettools_ufc.dir
+/home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/build/buckettools_ufc/CMakeFiles/genwrappers.dir
+/home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/build/CMakeFiles/run.dir
+/home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/build/CMakeFiles/terraferma.dir

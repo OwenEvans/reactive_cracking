@@ -1,0 +1,430 @@
+Command line:
+/home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/build/terraferma -vINFO -l /home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/dg_elasticity.tfml 
+
+Relevant environment variables:
+  none
+
+terraferma_options/
+  geometry/
+    dimension/
+      __value/
+       <value>: 2 
+        rank: 0
+    mesh::Mesh/
+      name: Mesh
+      source::UnitSquare/
+        name: UnitSquare
+        number_cells/
+          __value/
+           <value>: 100 10 
+            rank: 1
+            shape: 2
+            dim1: 2
+        diagonal/
+          __value: left
+        cell/
+          __value: triangle
+  io/
+    output_base_name/
+      __value/
+       <value>: dg_elasticity
+        lines: 1
+    visualization/
+      element::P1DG/
+        name: P1DG
+        family/
+          __value: DG
+        degree/
+          __value/
+           <value>: 1 
+            rank: 0
+    dump_periods: NULL
+    detectors: NULL
+  global_parameters/
+    ufl/
+      __value/
+       <value>: epsilon = sym(grad(u_i))
+
+epsilond = epsilon - tr(epsilon)/3.*Identity(2)
+sigma_i = G*epsilond + Kon2G*tr(epsilon)*Identity(2)
+
+n = FacetNormal(u_e.cell())
+a = FacetArea(u_e.cell())
+
+overstress = inner(n('+'),dot(avg(sigma_i), n('+'))) - sigmac('+')
+
+alpha = 0.5*(1.+tanh(overstress/alphalambda('+')))
+        lines: 20
+        type: code
+        language: python
+  system::Elasticity/
+    name: Elasticity
+    mesh::Mesh/
+      name: Mesh
+    ufl_symbol::global/
+      name: global
+      __value/
+       <value>: us
+        lines: 1
+    field::u/
+      name: u
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: u
+          lines: 1
+      type::Function/
+        name: Function
+        rank::Vector/
+          name: Vector
+          rank: 1
+          element::P2DG/
+            name: P2DG
+            family/
+              __value: DG
+            degree/
+              __value/
+               <value>: 2 
+                rank: 0
+          initial_condition::WholeMesh/
+            name: WholeMesh
+            type: initial_condition
+            constant::dim/
+              name: dim
+              __value/
+               <value>: 0 0 
+                rank: 1
+                shape: 2
+                dim1: dim
+      diagnostics/
+        include_in_visualization: NULL
+    coefficient::CriticalStress/
+      name: CriticalStress
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: sigmac
+          lines: 1
+      type::Constant/
+        name: Constant
+        rank::Scalar/
+          name: Scalar
+          rank: 0
+          value::WholeMesh/
+            name: WholeMesh
+            type: value
+            constant/
+              __value/
+               <value>: 1 
+                rank: 0
+      diagnostics: NULL
+    coefficient::AlphaLambda/
+      name: AlphaLambda
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: alphalambda
+          lines: 1
+      type::Constant/
+        name: Constant
+        rank::Scalar/
+          name: Scalar
+          rank: 0
+          value::WholeMesh/
+            name: WholeMesh
+            type: value
+            constant/
+              __value/
+               <value>: 0.01 
+                rank: 0
+      diagnostics: NULL
+    coefficient::G/
+      name: G
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: G
+          lines: 1
+      type::Constant/
+        name: Constant
+        rank::Scalar/
+          name: Scalar
+          rank: 0
+          value::WholeMesh/
+            name: WholeMesh
+            type: value
+            constant/
+              __value/
+               <value>: 1 
+                rank: 0
+      diagnostics: NULL
+    coefficient::Kon2G/
+      name: Kon2G
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: Kon2G
+          lines: 1
+      type::Constant/
+        name: Constant
+        rank::Scalar/
+          name: Scalar
+          rank: 0
+          value::WholeMesh/
+            name: WholeMesh
+            type: value
+            constant/
+              __value/
+               <value>: 1 
+                rank: 0
+      diagnostics: NULL
+    coefficient::u0/
+      name: u0
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: u0
+          lines: 1
+      type::Constant/
+        name: Constant
+        rank::Scalar/
+          name: Scalar
+          rank: 0
+          value::WholeMesh/
+            name: WholeMesh
+            type: value
+            constant/
+              __value/
+               <value>: 0.5 
+                rank: 0
+      diagnostics: NULL
+    coefficient::u1/
+      name: u1
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: u1
+          lines: 1
+      type::Constant/
+        name: Constant
+        rank::Scalar/
+          name: Scalar
+          rank: 0
+          value::WholeMesh/
+            name: WholeMesh
+            type: value
+            constant/
+              __value/
+               <value>: 1e-09 
+                rank: 0
+      diagnostics: NULL
+    coefficient::StabilizationCoefficient/
+      name: StabilizationCoefficient
+      ufl_symbol::global/
+        name: global
+        __value/
+         <value>: s
+          lines: 1
+      type::Constant/
+        name: Constant
+        rank::Scalar/
+          name: Scalar
+          rank: 0
+          value::WholeMesh/
+            name: WholeMesh
+            type: value
+            constant/
+              __value/
+               <value>: 5 
+                rank: 0
+      diagnostics: NULL
+    nonlinear_solver::SNES/
+      name: SNES
+      type::SNES/
+        name: SNES
+        form::Residual/
+          name: Residual
+          rank: 0
+          __value/
+           <value>: h = CellVolume(u_e.cell())
+
+epsilon_t = sym(grad(u_t))
+epsilond_t = epsilon_t - tr(epsilon_t)/3.*Identity(2)
+sigma_t = G*epsilond_t + Kon2G*tr(epsilon_t)*Identity(2)
+sigma_t_n = dot(avg(sigma_t), n('+'))
+sigma_t_n_d = dot(sigma_t, n)
+
+sigma_i_n = dot(avg(sigma_i), n('+'))
+sigma_i_n_d = dot(sigma_i, n)
+
+epsilon_stab = outer(jump(u_i), n('+'))
+epsilond_stab = epsilon_stab - tr(epsilon_stab)/3.*Identity(2)
+sigma_stab = G('+')*epsilond_stab + Kon2G('+')*tr(epsilon_stab)*Identity(2)
+
+F = inner(epsilon_t, sigma_i)*dx \
+    - (1.-alpha)*inner(sigma_t_n, jump(u_i))*dS \
+    - (1.-alpha)*inner(jump(u_t), sigma_i_n)*dS \
+    + (1.-alpha)*(s('+')/avg(h))*inner(outer(jump(u_t), n('+')), sigma_stab)*dS \
+    - alpha*inner(jump(u_t), n('+'))*sigmac('+')*dS \
+    - sigma_t_n_d[1]*u_i[1]*ds(3) \
+    - u_t[1]*sigma_i_n_d[1]*ds(3) \
+    + (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(3) \
+    - sigma_t_n_d[1]*u_i[1]*ds(4) \
+    - u_t[1]*sigma_i_n_d[1]*ds(4) \
+    + (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(4) \
+    - (s/h)*u0*u_t[1]*ds(4) \
+    -(s/h)*u1*u_t[1]*ds(3)
+            lines: 20
+            type: code
+            language: python
+          ufl_symbol::solver/
+            name: solver
+            __value/
+             <value>: F
+              lines: 1
+        form::Jacobian/
+          name: Jacobian
+          rank: 1
+          __value/
+           <value>: J = derivative(F, us_i, us_a)
+            lines: 20
+            type: code
+            language: python
+          ufl_symbol::solver/
+            name: solver
+            __value/
+             <value>: J
+              lines: 1
+        quadrature_rule::default/
+          name: default
+        snes_type::ls/
+          name: ls
+          ls_type::cubic/
+            name: cubic
+          convergence_test::default/
+            name: default
+        relative_error/
+          __value/
+           <value>: 1e-07 
+            rank: 0
+        max_iterations/
+          __value/
+           <value>: 500 
+            rank: 0
+        monitors: NULL
+        linear_solver/
+          iterative_method::preonly/
+            name: preonly
+          preconditioner::lu/
+            name: lu
+            factorization_package::mumps/
+              name: mumps
+        never_ignore_solver_failures: NULL
+      solve::in_timeloop/
+        name: in_timeloop
+Attaching coeffs for system Elasticity
+Initializing fields and coefficient expressions for system Elasticity
+Initializing coefficient functions for system Elasticity
+Evaluating initial fields for system Elasticity
+Initializing matrices for system Elasticity
+Bucket 
+  UFLSymbol G associated
+  UFLSymbol G_i associated
+  UFLSymbol G_n associated
+  UFLSymbol Kon2G associated
+  UFLSymbol Kon2G_i associated
+  UFLSymbol Kon2G_n associated
+  UFLSymbol alphalambda associated
+  UFLSymbol alphalambda_i associated
+  UFLSymbol alphalambda_n associated
+  UFLSymbol s associated
+  UFLSymbol s_i associated
+  UFLSymbol s_n associated
+  UFLSymbol sigmac associated
+  UFLSymbol sigmac_i associated
+  UFLSymbol sigmac_n associated
+  UFLSymbol u associated
+  UFLSymbol u0 associated
+  UFLSymbol u0_i associated
+  UFLSymbol u0_n associated
+  UFLSymbol u1 associated
+  UFLSymbol u1_i associated
+  UFLSymbol u1_n associated
+  UFLSymbol u_i associated
+  UFLSymbol u_n associated
+  UFLSymbol us associated
+  UFLSymbol us_i associated
+  UFLSymbol us_n associated
+  Mesh Mesh (/geometry/mesh[0])
+  SystemBucket Elasticity (/system[0])
+    FunctionBucket u (/system[0]/field[0])
+    FunctionBucket CriticalStress (/system[0]/coefficient[0])
+    FunctionBucket AlphaLambda (/system[0]/coefficient[1])
+    FunctionBucket G (/system[0]/coefficient[2])
+    FunctionBucket Kon2G (/system[0]/coefficient[3])
+    FunctionBucket u0 (/system[0]/coefficient[4])
+    FunctionBucket u1 (/system[0]/coefficient[5])
+    FunctionBucket StabilizationCoefficient (/system[0]/coefficient[6])
+    SolverBucket SNES (/system[0]/nonlinear_solver[0])
+      Form Residual (/system[0]/nonlinear_solver[0]/type/form[0])
+      Form Jacobian (/system[0]/nonlinear_solver[0]/type/form[1])
+
+Entering timeloop.
+Timestep numbers: 0 -> 1
+Times: 0 -> 0
+Timestep: 0
+Solving for Elasticity::SNES using SNES
+In FormFunction
+In FormJacobian
+In FormFunction
+In FormJacobian
+In FormFunction
+In FormFunction
+In FormJacobian
+In FormFunction
+In FormFunction
+In FormJacobian
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormJacobian
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+In FormFunction
+Convergence for Elasticity::SNES
+SNESConvergedReason -6
+SNES n/o iterations 4
+SNES n/o linear solver iterations 5
+  KSPConvergedReason 4
+  KSP n/o iterations 1
+Finished timeloop.

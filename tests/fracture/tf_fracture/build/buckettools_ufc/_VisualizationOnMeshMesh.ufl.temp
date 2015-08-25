@@ -1,0 +1,12 @@
+# Element declaration for Function: VisualizationOnMeshMesh
+vis_e = FiniteElement("DG", triangle, 1)
+
+# Test space declaration for Function: VisualizationOnMeshMesh
+vis_t = TestFunction(vis_e)
+# Trial space declaration for Function: VisualizationOnMeshMesh
+vis_a = TrialFunction(vis_e)
+# Form declaration for form: Bilinear
+a = vis_t*vis_a*dx
+forms = [a]
+
+# Produced by: /usr/local/terraferma/master/fenics-tferma-master/petsc-maint/reldebug/bin/systemwrappers_from_options -l /home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/build/buckettools_ufc/cpp_filenames.txt.temp -- /home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/dg_elasticity.tfml

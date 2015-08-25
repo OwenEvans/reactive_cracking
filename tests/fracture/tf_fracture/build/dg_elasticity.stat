@@ -1,0 +1,13 @@
+<header>
+<constant name="GitHash" type="string" value="eecc5955ab5f3d4b06db786b1fbfbf2d6f7c1871 Mon Aug 3 08:35:11 2015 -0400" />
+<constant name="CompileTime" type="string" value="Aug  8 2015 03:12:21" />
+<constant name="StartTime" type="string" value="Tue Aug 25 01:47:18 2015" />
+<constant name="HostName" type="string" value="blakey" />
+<constant name="format" type="string" value="plain_text" />
+<field column="1" name="timestep" statistic="value" />
+<field column="2" name="ElapsedTime" statistic="value" />
+<field column="3" name="ElapsedWallTime" statistic="value" />
+<field column="4" name="dt" statistic="value" />
+</header>
+0 0.0000000000e+00 1.1779690000e+00 0.0000000000e+00 
+1 0.0000000000e+00 8.3429470000e+00 0.0000000000e+00 

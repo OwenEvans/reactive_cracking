@@ -1,0 +1,14 @@
+*** ERROR: terminating at the end of the timestep.
+-------------------------------------------------------------------------
+*** Problem:  SNES failed to converge.
+*** Reason:   Solver: Elasticity::SNES, SNESConvergedReason: -6.
+*** Where:    /home/cwilson/repos/github/TerraFERMA/TerraFERMA/buckettools/cpp/SolverBucket.cpp:767
+*** 
+*** GitHash:  eecc5955ab5f3d4b06db786b1fbfbf2d6f7c1871 Mon Aug 3 08:35:11 2015 -0400
+*** Compiled: Aug  8 2015 03:12:15
+*** 
+-------------------------------------------------------------------------
+
+
+SIGINT received.
+SIGINT received, terminating timeloop.

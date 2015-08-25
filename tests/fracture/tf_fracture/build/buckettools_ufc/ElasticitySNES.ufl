@@ -1,0 +1,119 @@
+# Function elements declaration for System: Elasticity
+# Element declaration for Function: u
+u_e= VectorElement("DG", triangle, 2)
+
+# System element is not mixed
+us_e = u_e
+
+# Test space declaration for Function: u
+u_t = TestFunction(u_e)
+# Test space declaration for System: Elasticity
+us_t = u_t
+
+# Trial space declaration for Function: u
+u_a = TrialFunction(u_e)
+# Trial space declaration for System: Elasticity
+us_a = u_a
+
+# Value declaration for Function: u
+u = Coefficient(u_e)
+# Value declaration for System: Elasticity
+us = u
+
+# Last iteration value declaration for Function: u
+u_i = Coefficient(u_e)
+# Last iteration value declaration for System: Elasticity
+us_i = u_i
+
+# Previous time-level value declaration for Function: u
+u_n = Coefficient(u_e)
+# Previous time-level value declaration for System: Elasticity
+us_n = u_n
+
+# Coefficient declaration for Constant: CriticalStress
+sigmac = Constant(triangle)
+sigmac_i = Constant(triangle)
+sigmac_n = Constant(triangle)
+# Coefficient declaration for Constant: AlphaLambda
+alphalambda = Constant(triangle)
+alphalambda_i = Constant(triangle)
+alphalambda_n = Constant(triangle)
+# Coefficient declaration for Constant: G
+G = Constant(triangle)
+G_i = Constant(triangle)
+G_n = Constant(triangle)
+# Coefficient declaration for Constant: Kon2G
+Kon2G = Constant(triangle)
+Kon2G_i = Constant(triangle)
+Kon2G_n = Constant(triangle)
+# Coefficient declaration for Constant: u0
+u0 = Constant(triangle)
+u0_i = Constant(triangle)
+u0_n = Constant(triangle)
+# Coefficient declaration for Constant: u1
+u1 = Constant(triangle)
+u1_i = Constant(triangle)
+u1_n = Constant(triangle)
+# Coefficient declaration for Constant: StabilizationCoefficient
+s = Constant(triangle)
+s_i = Constant(triangle)
+s_n = Constant(triangle)
+
+# Declaring special coefficients, such as the timestep.
+
+
+# Finished declaring functions for this system, start on other systems.
+
+
+# Finished declaring functions for all other systems, start on forms.
+
+# Global preamble
+epsilon = sym(grad(u_i))
+
+epsilond = epsilon - tr(epsilon)/3.*Identity(2)
+sigma_i = G*epsilond + Kon2G*tr(epsilon)*Identity(2)
+
+n = FacetNormal(u_e.cell())
+a = FacetArea(u_e.cell())
+
+overstress = inner(n('+'),dot(avg(sigma_i), n('+'))) - sigmac('+')
+
+alpha = 0.5*(1.+tanh(overstress/alphalambda('+')))
+# Form declaration for form: Residual
+h = CellVolume(u_e.cell())
+
+epsilon_t = sym(grad(u_t))
+epsilond_t = epsilon_t - tr(epsilon_t)/3.*Identity(2)
+sigma_t = G*epsilond_t + Kon2G*tr(epsilon_t)*Identity(2)
+sigma_t_n = dot(avg(sigma_t), n('+'))
+sigma_t_n_d = dot(sigma_t, n)
+
+sigma_i_n = dot(avg(sigma_i), n('+'))
+sigma_i_n_d = dot(sigma_i, n)
+
+epsilon_stab = outer(jump(u_i), n('+'))
+epsilond_stab = epsilon_stab - tr(epsilon_stab)/3.*Identity(2)
+sigma_stab = G('+')*epsilond_stab + Kon2G('+')*tr(epsilon_stab)*Identity(2)
+
+F = inner(epsilon_t, sigma_i)*dx \
+    - (1.-alpha)*inner(sigma_t_n, jump(u_i))*dS \
+    - (1.-alpha)*inner(jump(u_t), sigma_i_n)*dS \
+    + (1.-alpha)*(s('+')/avg(h))*inner(outer(jump(u_t), n('+')), sigma_stab)*dS \
+    - alpha*inner(jump(u_t), n('+'))*sigmac('+')*dS \
+    - sigma_t_n_d[1]*u_i[1]*ds(3) \
+    - u_t[1]*sigma_i_n_d[1]*ds(3) \
+    + (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(3) \
+    - sigma_t_n_d[1]*u_i[1]*ds(4) \
+    - u_t[1]*sigma_i_n_d[1]*ds(4) \
+    + (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(4) \
+    - (s/h)*u0*u_t[1]*ds(4) \
+    -(s/h)*u1*u_t[1]*ds(3)
+
+# Form declaration for form: Jacobian
+J = derivative(F, us_i, us_a)
+
+
+# Declare potentially non-default form names to be accessible
+forms = [F, J]
+
+# Produced by: /usr/local/terraferma/master/fenics-tferma-master/petsc-maint/reldebug/bin/systemwrappers_from_options -l /home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/build/buckettools_ufc/cpp_filenames.txt.temp -- /home/oevans/repos/bitbucket/git/reactive_cracking/tests/fracture/tf_fracture/dg_elasticity.tfml
