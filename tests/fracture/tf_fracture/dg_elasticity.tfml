@@ -7,7 +7,7 @@
     <mesh name="Mesh">
       <source name="UnitSquare">
         <number_cells>
-          <integer_value shape="2" dim1="2" rank="1">300 40</integer_value>
+          <integer_value shape="2" dim1="2" rank="1">200 200</integer_value>
         </number_cells>
         <diagonal>
           <string_value>left</string_value>
@@ -85,9 +85,9 @@ alpha = 0.5*(1.+tanh(overstress/alphalambda('+')))</string_value>
       </ufl_symbol>
       <type name="Function">
         <rank name="Vector" rank="1">
-          <element name="P2DG">
+          <element name="P2">
             <family>
-              <string_value>DG</string_value>
+              <string_value>CG</string_value>
             </family>
             <degree>
               <integer_value rank="0">2</integer_value>
@@ -98,6 +98,31 @@ alpha = 0.5*(1.+tanh(overstress/alphalambda('+')))</string_value>
               <real_value shape="2" dim1="dim" rank="1">0. 0.</real_value>
             </constant>
           </initial_condition>
+          <boundary_condition name="top">
+            <boundary_ids>
+              <integer_value shape="1" rank="1">4</integer_value>
+            </boundary_ids>
+            <sub_components name="All">
+              <type type="boundary_condition" name="Dirichlet">
+                <python rank="1">
+                  <string_value lines="20" type="code" language="python">def val(x,t):
+  return [0, 10.0*t]</string_value>
+                </python>
+              </type>
+            </sub_components>
+          </boundary_condition>
+          <boundary_condition name="bottom">
+            <boundary_ids>
+              <integer_value shape="1" rank="1">3</integer_value>
+            </boundary_ids>
+            <sub_components name="All">
+              <type type="boundary_condition" name="Dirichlet">
+                <constant name="dim">
+                  <real_value shape="2" dim1="dim" rank="1">0.0 0.0</real_value>
+                </constant>
+              </type>
+            </sub_components>
+          </boundary_condition>
         </rank>
       </type>
       <diagnostics>
@@ -211,7 +236,37 @@ alpha = 0.5*(1.+tanh(overstress/alphalambda('+')))</string_value>
         <rank name="Scalar" rank="0">
           <value type="value" name="WholeMesh">
             <constant>
-              <real_value rank="0">5.0</real_value>
+              <real_value rank="0">10.0</real_value>
+            </constant>
+          </value>
+        </rank>
+      </type>
+      <diagnostics/>
+    </coefficient>
+    <coefficient name="K">
+      <ufl_symbol name="global">
+        <string_value lines="1">K</string_value>
+      </ufl_symbol>
+      <type name="Constant">
+        <rank name="Scalar" rank="0">
+          <value type="value" name="WholeMesh">
+            <constant>
+              <real_value rank="0">1.0</real_value>
+            </constant>
+          </value>
+        </rank>
+      </type>
+      <diagnostics/>
+    </coefficient>
+    <coefficient name="delta_c">
+      <ufl_symbol name="global">
+        <string_value lines="1">delta_c</string_value>
+      </ufl_symbol>
+      <type name="Constant">
+        <rank name="Scalar" rank="0">
+          <value type="value" name="WholeMesh">
+            <constant>
+              <real_value rank="0">1.0</real_value>
             </constant>
           </value>
         </rank>
@@ -237,20 +292,20 @@ epsilond_stab = epsilon_stab - tr(epsilon_stab)/3.*Identity(2)
 sigma_stab = G('+')*epsilond_stab + Kon2G('+')*tr(epsilon_stab)*Identity(2)
 
 F = inner(epsilon_t, sigma_i)*dx \
-    - (1.-alpha)*inner(sigma_t_n, jump(u_i))*dS \
-    - (1.-alpha)*inner(jump(u_t), sigma_i_n)*dS \
-    + (1.-alpha)*(s('+')/avg(h))*inner(outer(jump(u_t), n('+')), sigma_stab)*dS \
-    - alpha*inner(jump(u_t), n('+'))*sigmac('+')*dS \
-    - sigma_t_n_d[1]*u_i[1]*ds(3) \
-    - u_t[1]*sigma_i_n_d[1]*ds(3) \
-    + (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(3) \
-    - sigma_t_n_d[1]*u_i[1]*ds(4) \
-    - u_t[1]*sigma_i_n_d[1]*ds(4) \
-    + (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(4) \
-    + u0*sigma_t_n_d[1]*ds(4) \
-    - (s/h)*u0*u_t[1]*ds(4) \
-    #- u1*sigma_t_n_d[1]*ds(3) \
-    #- (s/h)*u1*u_t[1]*ds(3) \</string_value>
+    #- (1.)*inner(sigma_t_n, jump(u_i))*dS \
+    #- (1.)*inner(jump(u_t), sigma_i_n)*dS \
+    #+ (1.)*(s('+')/avg(h))*inner(outer(jump(u_t), n('+')), sigma_stab)*dS \
+    #- sigma_t_n_d[1]*u_i[1]*ds(3) \
+    #- u_t[1]*sigma_i_n_d[1]*ds(3) \
+    #+ (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(3) \
+    #- sigma_t_n_d[1]*u_i[1]*ds(4) \
+    #- u_t[1]*sigma_i_n_d[1]*ds(4) \
+    #+ (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(4) \
+    #+ u0*sigma_t_n_d[1]*ds(4) \
+    #- (s/h)*u0*u_t[1]*ds(4) \
+    #+ u1*sigma_t_n_d[1]*ds(3) \
+    #- (s/h)*u1*u_t[1]*ds(3) \
+    #- alpha*inner(jump(u_t), n('+'))*sigmac('+')*(1 - (1./delta_c)*inner(jump(u), n('+')))*dS \</string_value>
           <ufl_symbol name="solver">
             <string_value lines="1">F</string_value>
           </ufl_symbol>
