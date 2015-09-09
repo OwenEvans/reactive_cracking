@@ -1,0 +1,296 @@
+<?xml version='1.0' encoding='utf-8'?>
+<terraferma_options>
+  <geometry>
+    <dimension>
+      <integer_value rank="0">2</integer_value>
+    </dimension>
+    <mesh name="Mesh">
+      <source name="Rectangle">
+        <lower_left>
+          <real_value shape="2" dim1="2" rank="1">-2.0 -1.0</real_value>
+        </lower_left>
+        <upper_right>
+          <real_value shape="2" dim1="2" rank="1">2.0 1.0</real_value>
+        </upper_right>
+        <number_cells>
+          <integer_value shape="2" dim1="2" rank="1">200 100</integer_value>
+        </number_cells>
+        <diagonal>
+          <string_value>right/left</string_value>
+        </diagonal>
+        <cell>
+          <string_value>triangle</string_value>
+        </cell>
+      </source>
+    </mesh>
+  </geometry>
+  <io>
+    <output_base_name>
+      <string_value lines="1">elasticity_stress</string_value>
+    </output_base_name>
+    <visualization>
+      <element name="P2">
+        <family>
+          <string_value>CG</string_value>
+        </family>
+        <degree>
+          <integer_value rank="0">2</integer_value>
+        </degree>
+      </element>
+    </visualization>
+    <dump_periods/>
+    <detectors/>
+  </io>
+  <global_parameters>
+    <ufl>
+      <string_value lines="20" type="code" language="python">epsilon = as_tensor(0.5*(u_i[i].dx(j) + u_i[j].dx(i)),[i,j])
+
+sigma_i = (E/(1. - nu**2))*(as_matrix([[epsilon[0,0] + nu*epsilon[1,1], (1. - nu)*epsilon[0,1]], [(1. - nu)*epsilon[1,0], nu*epsilon[0,0] + epsilon[1,1]]]))
+
+n = FacetNormal(u_e.cell())
+a = FacetArea(u_e.cell())</string_value>
+    </ufl>
+  </global_parameters>
+  <system name="Elasticity">
+    <mesh name="Mesh"/>
+    <ufl_symbol name="global">
+      <string_value lines="1">us</string_value>
+    </ufl_symbol>
+    <field name="u">
+      <ufl_symbol name="global">
+        <string_value lines="1">u</string_value>
+      </ufl_symbol>
+      <type name="Function">
+        <rank name="Vector" rank="1">
+          <element name="P2">
+            <family>
+              <string_value>CG</string_value>
+            </family>
+            <degree>
+              <integer_value rank="0">2</integer_value>
+            </degree>
+          </element>
+          <initial_condition type="initial_condition" name="WholeMesh">
+            <constant name="dim">
+              <real_value shape="2" dim1="dim" rank="1">0. 0.</real_value>
+            </constant>
+          </initial_condition>
+        </rank>
+      </type>
+      <diagnostics>
+        <include_in_visualization/>
+      </diagnostics>
+    </field>
+    <coefficient name="E">
+      <ufl_symbol name="global">
+        <string_value lines="1">E</string_value>
+      </ufl_symbol>
+      <type name="Constant">
+        <rank name="Scalar" rank="0">
+          <value type="value" name="WholeMesh">
+            <constant>
+              <real_value rank="0">10.0</real_value>
+            </constant>
+          </value>
+        </rank>
+      </type>
+      <diagnostics/>
+    </coefficient>
+    <coefficient name="nu">
+      <ufl_symbol name="global">
+        <string_value lines="1">nu</string_value>
+      </ufl_symbol>
+      <type name="Constant">
+        <rank name="Scalar" rank="0">
+          <value type="value" name="WholeMesh">
+            <constant>
+              <real_value rank="0">0.25</real_value>
+            </constant>
+          </value>
+        </rank>
+      </type>
+      <diagnostics/>
+    </coefficient>
+    <coefficient name="T">
+      <ufl_symbol name="global">
+        <string_value lines="1">T</string_value>
+      </ufl_symbol>
+      <type name="Constant">
+        <rank name="Scalar" rank="0">
+          <value type="value" name="WholeMesh">
+            <constant>
+              <real_value rank="0">0.01</real_value>
+            </constant>
+          </value>
+        </rank>
+      </type>
+      <diagnostics/>
+    </coefficient>
+    <nonlinear_solver name="SNES">
+      <type name="SNES">
+        <form name="Residual" rank="0">
+          <string_value lines="20" type="code" language="python">h = CellVolume(u_e.cell())
+
+epsilon_t = sym(grad(u_t))
+#epsilond_t = epsilon_t - tr(epsilon_t)/3.*Identity(2)
+#sigma_t = G*epsilond_t + Kon2G*tr(epsilon_t)*Identity(2)
+#sigma_t_n = dot(avg(sigma_t), n('+'))
+#sigma_t_n_d = dot(sigma_t, n)
+
+#sigma_i_n = dot(avg(sigma_i), n('+'))
+#sigma_i_n_d = dot(sigma_i, n)
+
+#epsilon_stab = outer(jump(u_i), n('+'))
+#epsilond_stab = epsilon_stab - tr(epsilon_stab)/3.*Identity(2)
+#sigma_stab = G('+')*epsilond_stab + Kon2G('+')*tr(epsilon_stab)*Identity(2)
+
+F = inner(epsilon_t, sigma_i)*dx \
+    + T*u_t[0]*ds(1) \
+    - T*u_t[0]*ds(2)
+    #- (1.)*inner(sigma_t_n, jump(u_i))*dS \
+    #- (1.)*inner(jump(u_t), sigma_i_n)*dS \
+    #+ (1.)*(s('+')/avg(h))*inner(outer(jump(u_t), n('+')), sigma_stab)*dS \
+    #- sigma_t_n_d[1]*u_i[1]*ds(3) \
+    #- u_t[1]*sigma_i_n_d[1]*ds(3) \
+    #+ (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(3) \
+    #- sigma_t_n_d[1]*u_i[1]*ds(4) \
+    #- u_t[1]*sigma_i_n_d[1]*ds(4) \
+    #+ (s/h)*u_t[1]*(2*G*u_i[1]/3. + Kon2G*u_i[1]/3.)*ds(4) \
+    #+ u0*sigma_t_n_d[1]*ds(4) \
+    #- (s/h)*u0*u_t[1]*ds(4) \
+    #+ u1*sigma_t_n_d[1]*ds(3) \
+    #- (s/h)*u1*u_t[1]*ds(3) \
+    #- alpha*inner(jump(u_t), n('+'))*sigmac('+')*(1 - (1./delta_c)*inner(jump(u), n('+')))*dS \</string_value>
+          <ufl_symbol name="solver">
+            <string_value lines="1">F</string_value>
+          </ufl_symbol>
+        </form>
+        <form name="Jacobian" rank="1">
+          <string_value lines="20" type="code" language="python">J = derivative(F, us_i, us_a)</string_value>
+          <ufl_symbol name="solver">
+            <string_value lines="1">J</string_value>
+          </ufl_symbol>
+        </form>
+        <quadrature_rule name="default"/>
+        <snes_type name="ls">
+          <ls_type name="cubic"/>
+          <convergence_test name="default"/>
+        </snes_type>
+        <relative_error>
+          <real_value rank="0">1.0e-13</real_value>
+        </relative_error>
+        <max_iterations>
+          <integer_value rank="0">500</integer_value>
+        </max_iterations>
+        <monitors>
+          <view_snes/>
+        </monitors>
+        <linear_solver>
+          <iterative_method name="preonly"/>
+          <preconditioner name="lu">
+            <factorization_package name="mumps"/>
+          </preconditioner>
+          <remove_null_space>
+            <null_space name="solid_body_rotation">
+              <field name="u">
+                <python>
+                  <string_value lines="20" type="code" language="python">def val(x):
+  return [-x[1], x[0]]</string_value>
+                </python>
+              </field>
+              <monitors/>
+            </null_space>
+            <null_space name="vertical_translation">
+              <field name="u">
+                <python>
+                  <string_value lines="20" type="code" language="python">def val(x):
+  return [0., 1.]</string_value>
+                </python>
+              </field>
+              <monitors/>
+            </null_space>
+            <null_space name="horizontal_translation">
+              <field name="u">
+                <python>
+                  <string_value lines="20" type="code" language="python">def val(x):
+  return [1., 0.]</string_value>
+                </python>
+              </field>
+              <monitors/>
+            </null_space>
+            <monitors/>
+          </remove_null_space>
+        </linear_solver>
+        <never_ignore_solver_failures/>
+      </type>
+      <solve name="in_timeloop"/>
+    </nonlinear_solver>
+  </system>
+  <system name="Stress">
+    <mesh name="Mesh"/>
+    <ufl_symbol name="global">
+      <string_value lines="1">usigma</string_value>
+    </ufl_symbol>
+    <field name="sigmap">
+      <ufl_symbol name="global">
+        <string_value lines="1">sigmap</string_value>
+      </ufl_symbol>
+      <type name="Function">
+        <rank name="Tensor" rank="2">
+          <element name="P2">
+            <family>
+              <string_value>CG</string_value>
+            </family>
+            <degree>
+              <integer_value rank="0">2</integer_value>
+            </degree>
+          </element>
+          <initial_condition type="initial_condition" name="WholeMesh">
+            <constant name="dim">
+              <real_value symmetric="false" dim2="dim" shape="2 2" dim1="dim" rank="2">0. 0. 0. 0.</real_value>
+            </constant>
+          </initial_condition>
+        </rank>
+      </type>
+      <diagnostics>
+        <include_in_visualization/>
+      </diagnostics>
+    </field>
+    <nonlinear_solver name="SNES">
+      <type name="SNES">
+        <form name="Residual" rank="0">
+          <string_value lines="20" type="code" language="python">F = inner(sigmap_t, sigmap_i - sigma_i)*dx</string_value>
+          <ufl_symbol name="solver">
+            <string_value lines="1">F</string_value>
+          </ufl_symbol>
+        </form>
+        <form name="Jacobian" rank="1">
+          <string_value lines="20" type="code" language="python">J = derivative(F, usigma_i, usigma_a)</string_value>
+          <ufl_symbol name="solver">
+            <string_value lines="1">J</string_value>
+          </ufl_symbol>
+        </form>
+        <quadrature_rule name="default"/>
+        <snes_type name="ls">
+          <ls_type name="cubic"/>
+          <convergence_test name="default"/>
+        </snes_type>
+        <relative_error>
+          <real_value rank="0">1.0e-9</real_value>
+        </relative_error>
+        <max_iterations>
+          <integer_value rank="0">20</integer_value>
+        </max_iterations>
+        <monitors/>
+        <linear_solver>
+          <iterative_method name="preonly"/>
+          <preconditioner name="lu">
+            <factorization_package name="mumps"/>
+          </preconditioner>
+        </linear_solver>
+        <never_ignore_solver_failures/>
+      </type>
+      <solve name="in_timeloop"/>
+    </nonlinear_solver>
+  </system>
+</terraferma_options>
